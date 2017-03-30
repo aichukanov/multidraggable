@@ -34,6 +34,17 @@
 
                 inst.options.cursorAt = getCursorAt(evt, $this, helper);
 
+                var hiddenSelector = ':not(".ui-draggable-hidden"):not(".ui-draggable-clone")';
+                if (typeof inst.options.snap === "string") {
+                    var snapSelectors = inst.options.snap.split(',');
+                    for (var i in snapSelectors) {
+                        if (snapSelectors[i].indexOf(hiddenSelector) < 0) {
+                            snapSelectors[i] = snapSelectors[i].trim() + hiddenSelector;
+                        }
+                    }
+                    inst.options.snap = snapSelectors.join(',');
+                }
+
                 if (inst.options.multiple == true && !inst.options.cloneHelper) {
                     $(inst.options.selected).addClass('ui-draggable-hidden');
                 }
@@ -67,13 +78,43 @@
     function getCursorAt(evt, $this, helper) {
         var offset = $this.offset(),
             helperStartPos = helper.data('startPosition'),
-            targetLeft = evt.clientX - offset.left - helperStartPos.left + getLeft($this),
-            targetTop = evt.clientY - offset.top - helperStartPos.top + getTop($this);
+            targetLeft = evt.clientX - offset.left - helperStartPos.left + getLeft($this) + getSumScrolling($this, null, 'left'),
+            targetTop = evt.clientY - offset.top - helperStartPos.top + getTop($this) + getSumScrolling($this);
 
         return {
             left: targetLeft,
             top: targetTop
         };
+    }
+
+    function getParentsBefore(dom, container) {
+        var parentsBefore = [];
+        var parents = dom.parents();
+        for (var i = 0, containerIndex = parents.index(container) ; i <= containerIndex; i++) {
+            parentsBefore.push($(parents[i]));
+        }
+        return [dom].concat(parentsBefore);
+    }
+
+    function getSumScrolling(dom, container, direction) {
+        var sum = 0;
+        var parents = getParentsBefore(dom, container || $('body'));
+
+        if (direction == 'left') {
+            var getScroll = function (el) {
+                return el.scrollLeft();
+            }
+        } 
+        else {
+            getScroll = function (el) {
+                return el.scrollTop();
+            }
+        }
+
+        for (var i = 0, lng = parents.length; i < lng; i++) {
+            sum += parseInt(getScroll(parents[i]));
+        }
+        return sum;
     }
 
     function createHelper(selected) {
