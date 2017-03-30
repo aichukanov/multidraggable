@@ -33,14 +33,18 @@
                 }
 
                 inst.options.cursorAt = getCursorAt(evt, $this, helper);
-            }
-        },
-        start: function (evt, ui) {
-            var $this = $(this),
-                inst = $this.data('ui-draggable');
-            
-            if (inst.options.multiple == true && !inst.options.cloneHelper) {
-                $(inst.options.selected).css('visibility', 'hidden');
+
+                if (typeof inst.options.snap === "string") {
+                    var snapSelectors = inst.options.snap.split(',');
+                    for (var i in snapSelectors) {
+                        snapSelectors[i] = snapSelectors[i].trim() + ':not(".ui-draggable-hidden"):not(".ui-draggable-clone")'
+                    }
+                    inst.options.snap = snapSelectors.join(',');
+                }
+
+                if (inst.options.multiple == true && !inst.options.cloneHelper) {
+                    $(inst.options.selected).addClass('ui-draggable-hidden');
+                }
             }
         },
         stop: function (evt, ui) {
@@ -60,9 +64,9 @@
 
                     $this.css({
                         left: l + leftDif - 1,
-                        top: t + topDif - 1,
-                        visibility: 'visible'
+                        top: t + topDif - 1
                     });
+                    $this.removeClass('ui-draggable-hidden');
                 });
             }
         }
@@ -81,7 +85,7 @@
     }
 
     function createHelper(selected) {
-        var selContainer = $('<div></div>').addClass('ui-draggable-selected-container');
+        var selContainer = $('<div></div>').addClass('ui-draggable-container');
         var l = Number.MAX_SAFE_INTEGER, t = Number.MAX_SAFE_INTEGER,
             r = Number.MIN_SAFE_INTEGER, b = Number.MIN_SAFE_INTEGER;
         $.each(selected, function () {
@@ -98,8 +102,8 @@
         });
 
         selContainer.css({
-            width: r - l,
-            height: b - t
+            width: r - l + 2,
+            height: b - t + 2
         });
 
         $.each(selected, function () {
@@ -109,10 +113,9 @@
             var left = getLeft($this) - l,
                 top = getTop($this) - t;
 
-            clone.addClass('ui-draggable-selected-clone').css({
+            clone.addClass('ui-draggable-clone').css({
                 left: left,
-                top: top,
-                opacity: 1
+                top: top
             })
 
             selContainer.append(clone);
