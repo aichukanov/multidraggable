@@ -34,14 +34,6 @@
 
                 inst.options.cursorAt = getCursorAt(evt, $this, helper);
 
-                if (typeof inst.options.snap === "string") {
-                    var snapSelectors = inst.options.snap.split(',');
-                    for (var i in snapSelectors) {
-                        snapSelectors[i] = snapSelectors[i].trim() + ':not(".ui-draggable-hidden"):not(".ui-draggable-clone")'
-                    }
-                    inst.options.snap = snapSelectors.join(',');
-                }
-
                 if (inst.options.multiple == true && !inst.options.cloneHelper) {
                     $(inst.options.selected).addClass('ui-draggable-hidden');
                 }
