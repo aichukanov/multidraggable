@@ -1,6 +1,11 @@
-﻿.part {
-    display: block;
+﻿
+body {
+    font-family: Verdana;
     text-align: center;
+}
+
+.part {
+    display: block;
     margin-bottom: 5px;
 }
 
@@ -34,7 +39,6 @@
     height: 100%;
     text-align: center;
     color: #999;
-    font-family: Tahoma;
 }
 
 #c1:after {
