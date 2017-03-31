@@ -23,16 +23,17 @@
         prepare: function (evt) {
             var $this = $(this),
                 inst = $this.data('ui-draggable');
-            
+
             if (inst.options.multiple == true) {
+                inst.options._selected = $(inst.options.selected);
                 inst.options.cloneHelper = inst.options.cloneHelper || inst.options.helper == 'clone';
 
-                var helper = createHelper($(inst.options.selected));
+                var helper = createHelper(inst.options._selected);
                 inst.options.helper = function () {
                     return helper;
                 }
 
-                inst.options.cursorAt = getCursorAt(evt, $this, helper);
+                inst.options.cursorAt = getCursorAt(evt, $this, helper.data('startPosition'));
 
                 var hiddenSelector = ':not(".ui-draggable-hidden"):not(".ui-draggable-clone")';
                 if (typeof inst.options.snap === "string") {
@@ -46,7 +47,7 @@
                 }
 
                 if (inst.options.multiple == true && !inst.options.cloneHelper) {
-                    $(inst.options.selected).addClass('ui-draggable-hidden');
+                    inst.options._selected.addClass('ui-draggable-hidden');
                 }
             }
         },
@@ -57,10 +58,8 @@
                 var helperStartPos = ui.helper.data('startPosition'),
                     leftDif = getLeft(ui.helper) - helperStartPos.left,
                     topDif = getTop(ui.helper) - helperStartPos.top;
-
-                var selected = $(inst.options.selected);
-
-                $.each(selected, function () {
+                
+                $.each(inst.options._selected, function () {
                     var $this = $(this);
                     var l = getLeft($this),
                         t = getTop($this);
@@ -75,46 +74,16 @@
         }
     });
 
-    function getCursorAt(evt, $this, helper) {
+    function getCursorAt(evt, $this, helperStartPos) {
         var offset = $this.offset(),
-            helperStartPos = helper.data('startPosition'),
-            targetLeft = evt.clientX - offset.left - helperStartPos.left + getLeft($this) + getSumScrolling($this, null, 'left'),
-            targetTop = evt.clientY - offset.top - helperStartPos.top + getTop($this) + getSumScrolling($this);
+        	$body = $('body'),
+            targetLeft = evt.clientX - offset.left - helperStartPos.left + getLeft($this) + $body.scrollLeft(),
+            targetTop = evt.clientY - offset.top - helperStartPos.top + getTop($this) + $body.scrollTop();
 
         return {
             left: targetLeft,
             top: targetTop
         };
-    }
-
-    function getParentsBefore(dom, container) {
-        var parentsBefore = [];
-        var parents = dom.parents();
-        for (var i = 0, containerIndex = parents.index(container) ; i <= containerIndex; i++) {
-            parentsBefore.push($(parents[i]));
-        }
-        return [dom].concat(parentsBefore);
-    }
-
-    function getSumScrolling(dom, container, direction) {
-        var sum = 0;
-        var parents = getParentsBefore(dom, container || $('body'));
-
-        if (direction == 'left') {
-            var getScroll = function (el) {
-                return el.scrollLeft();
-            }
-        } 
-        else {
-            getScroll = function (el) {
-                return el.scrollTop();
-            }
-        }
-
-        for (var i = 0, lng = parents.length; i < lng; i++) {
-            sum += parseInt(getScroll(parents[i]));
-        }
-        return sum;
     }
 
     function createHelper(selected) {
