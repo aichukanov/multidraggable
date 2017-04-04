@@ -1,4 +1,4 @@
-# multidraggable
+# Multidraggable
 jQueryUI draggable for all selected elements.
 
 <h3>Options:</h3>
