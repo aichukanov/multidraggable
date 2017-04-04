@@ -1,4 +1,4 @@
-# multi-draggable
+# multidraggable
 jQueryUI draggable for all selected elements.
 
 <h3>Options:</h3>
@@ -14,4 +14,4 @@ Show or not elements you're dragging on their start positions.
 
 Snap CONTAINER with your elements to 'selector'. 
 
-You can see how it works on <a href="illat.net">illat.net</a>
+You can see how it works on <a href="http://illat.net/multidraggable.html">illat.net/multidraggable</a>
