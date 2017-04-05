@@ -14,4 +14,4 @@ Show or not elements you're dragging on their start positions.
 
 Snap CONTAINER with your elements to 'selector'. 
 
-You can see how it works on <a href="http://illat.net/multidraggable.html">illat.net/multidraggable</a>
+You can see how it works on <a href="https://ready2.net/multidraggable.shtml">ready2.net/multidraggable</a>
