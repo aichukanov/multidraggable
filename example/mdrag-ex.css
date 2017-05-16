@@ -10,6 +10,7 @@ body {
 }
 
 .container {
+    overflow: auto;
     text-align: left;
     display: inline-block;
     vertical-align: top;
@@ -42,7 +43,7 @@ body {
 }
 
 #c1:after {
-    content: 'Multidraggable';
+    content: 'Intellectual guides';
 }
 #c2:after {
     content: 'Multidraggable with clone';

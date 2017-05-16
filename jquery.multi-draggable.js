@@ -88,8 +88,13 @@
 
     function createHelper(selected) {
         var selContainer = $('<div></div>').addClass('ui-draggable-container');
-        var l = Number.MAX_SAFE_INTEGER, t = Number.MAX_SAFE_INTEGER,
-            r = Number.MIN_SAFE_INTEGER, b = Number.MIN_SAFE_INTEGER;
+
+        // IE has no these constants. So I need define it here. 
+        var MAX_SAFE_INTEGER = 9007199254740991,
+            MIN_SAFE_INTEGER = -9007199254740991;
+
+        var l = MAX_SAFE_INTEGER, t = MAX_SAFE_INTEGER,
+            r = MIN_SAFE_INTEGER, b = MIN_SAFE_INTEGER;
         $.each(selected, function () {
             var $this = $(this),
                 left = getLeft($this),
@@ -103,9 +108,10 @@
             b = bottom > b ? bottom : b;
         });
 
+        var borderWidth = 
         selContainer.css({
-            width: r - l + 2,
-            height: b - t + 2
+            width: r - l,
+            height: b - t
         });
 
         $.each(selected, function () {
@@ -140,10 +146,12 @@
     }
 
     function getWidth(element) {
-        return parseFloat(getComputedStyle(element.get(0)).width);
+        //return parseFloat(getComputedStyle(element.get(0)).width);
+        return element.outerWidth();
     }
 
     function getHeight(element) {
-        return parseFloat(getComputedStyle(element.get(0)).height);
+        //return parseFloat(getComputedStyle(element.get(0)).height);
+        return element.outerHeight();
     }
 })(jQuery);
